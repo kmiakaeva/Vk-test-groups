@@ -7,8 +7,8 @@ import {
   View,
   Panel,
   Group,
-  usePlatform,
   Header,
+  ScreenSpinner,
 } from '@vkontakte/vkui';
 import '@vkontakte/vkui/dist/vkui.css';
 
@@ -17,14 +17,22 @@ import { GroupCard } from './components/GroupCard';
 
 const App = () => {
   const [groups, setGroups] = useState<GroupType[]>([]);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const platform = usePlatform();
+  const [popout, setPopout] = useState<React.JSX.Element | null>(null);
+
+  const clearPopout = () => setPopout(null);
+
+  const setLoadingScreenSpinner = () => {
+    setPopout(<ScreenSpinner state="loading" />);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        setLoading(true);
+        setLoadingScreenSpinner();
+        // add fake delay
+        await new Promise((resolve) => setTimeout(resolve, 1010));
+
         const response = await fetch('src/data/groups.json');
         const data = await response.json();
 
@@ -35,13 +43,11 @@ const App = () => {
           })),
         };
 
-        setTimeout(() => {
-          setGroups(transformedData.data || []);
-        }, 1010);
+        setGroups(transformedData.data || []);
       } catch (error) {
         setError('Произошла ошибка при загрузке данных');
       } finally {
-        setLoading(false);
+        clearPopout();
       }
     };
 
@@ -50,17 +56,23 @@ const App = () => {
 
   return (
     <AppRoot>
-      <SplitLayout header={platform !== 'vkcom' && <PanelHeader delimiter="none" />}>
+      <SplitLayout
+        header={<PanelHeader delimiter="none" />}
+        popout={popout}
+        aria-live="polite"
+        aria-busy={!!popout}
+      >
         <SplitCol autoSpaced>
           <View activePanel="main">
             <Panel id="main">
               <PanelHeader>VKUI</PanelHeader>
-              <Group header={<Header mode="secondary">Groups</Header>}>
-                {loading && <p>Загрузка....</p>}
-                {loading && error && <p>{error}</p>}
-                {!loading &&
-                  groups?.map((group: GroupType) => <GroupCard key={group.id} {...group} />)}
-              </Group>
+              {!error && (
+                <Group header={<Header mode="secondary">Groups</Header>}>
+                  {groups?.map((group: GroupType) => (
+                    <GroupCard key={group.id} {...group} />
+                  ))}
+                </Group>
+              )}
             </Panel>
           </View>
         </SplitCol>
