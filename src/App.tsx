@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import {
   AppRoot,
   PanelHeader,
@@ -11,12 +12,41 @@ import {
 } from '@vkontakte/vkui';
 import '@vkontakte/vkui/dist/vkui.css';
 
-import GroupsData from './data/groups.json';
-import { Group as GroupType } from './data/types';
+import { GetGroupsResponse, Group as GroupType } from './data/types';
 import { GroupCard } from './components/GroupCard';
 
 const App = () => {
+  const [groups, setGroups] = useState<GroupType[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const platform = usePlatform();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch('src/data/groups.json');
+        const data = await response.json();
+
+        const transformedData: GetGroupsResponse = {
+          result: 1,
+          data: data.map((group: GroupType) => ({
+            ...group,
+          })),
+        };
+
+        setTimeout(() => {
+          setGroups(transformedData.data || []);
+        }, 1010);
+      } catch (error) {
+        setError('Произошла ошибка при загрузке данных');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <AppRoot>
@@ -26,9 +56,10 @@ const App = () => {
             <Panel id="main">
               <PanelHeader>VKUI</PanelHeader>
               <Group header={<Header mode="secondary">Groups</Header>}>
-                {GroupsData.map((group: GroupType) => (
-                  <GroupCard key={group.id} {...group} />
-                ))}
+                {loading && <p>Загрузка....</p>}
+                {loading && error && <p>{error}</p>}
+                {!loading &&
+                  groups?.map((group: GroupType) => <GroupCard key={group.id} {...group} />)}
               </Group>
             </Panel>
           </View>
