@@ -1,5 +1,5 @@
 import { Avatar, SimpleCell } from '@vkontakte/vkui';
-import { Group } from '../data/types';
+import { Group } from '../api/types';
 
 export const GroupCard: React.FC<Group> = (props) => {
   return (
@@ -13,7 +13,7 @@ export const GroupCard: React.FC<Group> = (props) => {
           />
         )
       }
-      subtitle="closed"
+      subtitle={`${props.closed ? 'Закрытая' : 'Открытая'} группа`}
       expandable="auto"
       extraSubtitle={`${props.members_count ? `${props.members_count} участников` : ''}${
         props.members_count && props.friends?.length ? `, друзей: ${props.friends.length}` : ''

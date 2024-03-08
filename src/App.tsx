@@ -12,7 +12,8 @@ import {
 } from '@vkontakte/vkui';
 import '@vkontakte/vkui/dist/vkui.css';
 
-import { GetGroupsResponse, Group as GroupType } from './data/types';
+import { groupsApi } from './api/groupsApi';
+import { Group as GroupType } from './api/types';
 import { GroupCard } from './components/GroupCard';
 
 const App = () => {
@@ -27,28 +28,17 @@ const App = () => {
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoadingScreenSpinner();
-        // add fake delay
-        await new Promise((resolve) => setTimeout(resolve, 1010));
+    setLoadingScreenSpinner();
 
-        const response = await fetch('src/data/groups.json');
-        const data = await response.json();
-
-        const transformedData: GetGroupsResponse = {
-          result: 1,
-          data: data.map((group: GroupType) => ({
-            ...group,
-          })),
-        };
-
-        setGroups(transformedData.data || []);
-      } catch (error) {
-        setError('Произошла ошибка при загрузке данных');
-      } finally {
-        clearPopout();
-      }
+    const fetchData = () => {
+      return groupsApi()
+        .then((data) => setGroups(data.data || []))
+        .catch((error) => {
+          if (error instanceof Error) {
+            setError(error.message);
+          }
+        })
+        .finally(clearPopout);
     };
 
     fetchData();
@@ -66,6 +56,7 @@ const App = () => {
           <View activePanel="main">
             <Panel id="main">
               <PanelHeader>VKUI</PanelHeader>
+              {error && <Header mode="secondary">{error}</Header>}
               {!error && (
                 <Group header={<Header mode="secondary">Groups</Header>}>
                   {groups?.map((group: GroupType) => (
