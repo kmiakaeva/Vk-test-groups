@@ -1,11 +1,11 @@
 import groupsData from '../data/groups.json';
-import { GetGroupsResponse, Group as GroupType } from './types';
+import { GetGroupsResponse, Group as IGroup } from './types';
 
 export const groupsApi = (): Promise<GetGroupsResponse> => {
   return new Promise((resolve, reject) => {
     const result: GetGroupsResponse = {
       result: 1,
-      data: groupsData.map((group: GroupType) => ({
+      data: groupsData.map((group: IGroup) => ({
         ...group,
       })),
     };
