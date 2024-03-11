@@ -13,16 +13,16 @@ import '@vkontakte/vkui/dist/vkui.css';
 
 import { groupsApi } from './api/groupsApi';
 import { Group as IGroup } from './api/types';
+import useModalHistory from './hooks/useModalHistory';
 import { GroupCard } from './components/GroupCard';
-import { FriendsModal } from './components/FriendsModal';
+import { FriendsModal } from './components/Friends/FriendsModal';
 
 const App: React.FC = () => {
   const [popout, setPopout] = useState<React.JSX.Element | null>(null);
   const [groups, setGroups] = useState<IGroup[]>([]);
-  const [selectedGroup, setSelectedGroup] = useState<IGroup>({} as IGroup);
+  const [selectedGroupId, setSelectedGroupId] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [activeModal, setActiveModal] = useState<string | null>(null);
-  const [modalHistory, setModalHistory] = useState<string[]>([]);
+  const { activeModal, changeActiveModal, modalBack } = useModalHistory();
 
   const clearPopout = () => setPopout(null);
 
@@ -47,21 +47,7 @@ const App: React.FC = () => {
     fetchData();
   }, []);
 
-  const changeActiveModal = (activeModal: string | null) => {
-    activeModal = activeModal || null;
-    let localModalHistory = modalHistory ? [...modalHistory] : [];
-
-    if (activeModal === null) {
-      localModalHistory = [];
-    } else if (modalHistory.indexOf(activeModal) !== -1) {
-      localModalHistory = localModalHistory.splice(0, localModalHistory.indexOf(activeModal) + 1);
-    } else {
-      localModalHistory.push(activeModal);
-    }
-
-    setActiveModal(activeModal);
-    setModalHistory(localModalHistory);
-  };
+  const selectedGroup = groups.find((group: IGroup) => group.id === selectedGroupId) as IGroup;
 
   return (
     <AppRoot>
@@ -70,8 +56,7 @@ const App: React.FC = () => {
         modal={
           <FriendsModal
             activeModal={activeModal}
-            changeActiveModal={changeActiveModal}
-            modalHistory={modalHistory}
+            modalBack={modalBack}
             selectedGroup={selectedGroup}
           />
         }
@@ -90,7 +75,7 @@ const App: React.FC = () => {
                   <GroupCard
                     key={group.id}
                     changeActiveModal={changeActiveModal}
-                    setSelectedGroup={setSelectedGroup}
+                    setSelectedGroupId={setSelectedGroupId}
                     {...group}
                   />
                 ))}

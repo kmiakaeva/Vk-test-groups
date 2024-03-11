@@ -1,5 +1,6 @@
 import { createRoot } from 'react-dom/client';
 import { ConfigProvider, AdaptivityProvider } from '@vkontakte/vkui';
+
 import App from './App.tsx';
 
 const container = document.getElementById('root');

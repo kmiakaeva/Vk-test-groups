@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Dispatch, SetStateAction } from 'react';
 import { Avatar, Counter, Group, Header, SimpleCell } from '@vkontakte/vkui';
 import {
   Icon20LockOutline,
@@ -11,18 +11,21 @@ import { Group as IGroup } from '../api/types';
 
 interface GroupCardProps extends IGroup {
   changeActiveModal: (activeModal: string) => void;
-  setSelectedGroup: (selectedGroup: IGroup) => void;
+  setSelectedGroupId: Dispatch<SetStateAction<number | null>>;
 }
 
 export const GroupCard: React.FC<GroupCardProps> = ({
   changeActiveModal,
-  setSelectedGroup,
-  ...group
+  setSelectedGroupId,
+  id,
+  name,
+  avatar_color,
+  members_count,
+  friends,
+  closed,
 }) => {
-  const { name, avatar_color, members_count, friends, closed } = group;
-
   const handleClick = () => {
-    setSelectedGroup({ ...group });
+    setSelectedGroupId(id);
     changeActiveModal('fullscreen');
   };
 
