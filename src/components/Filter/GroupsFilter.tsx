@@ -1,22 +1,50 @@
-import React, { Dispatch, SetStateAction } from 'react';
+import React, { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState } from 'react';
 import { FormLayoutGroup, Group, Header } from '@vkontakte/vkui';
 
-import { SelectedFilters } from '../../api/types';
+import { Group as IGroup } from '../../api/types';
 import { RadioFilter } from './RadioFilter';
 import { SelectFilter } from './SelectFilter';
 
 interface GroupsFilterProps {
-  selectedFilters: SelectedFilters;
-  setSelectedFilters: Dispatch<SetStateAction<SelectedFilters>>;
+  setFilteredGroups: Dispatch<SetStateAction<IGroup[]>>;
+  groups: IGroup[];
 }
 
-export const GroupsFilter: React.FC<GroupsFilterProps> = ({
-  selectedFilters,
-  setSelectedFilters,
-}) => {
-  const handleFilterChange = (filterKey: string, value: string) => {
-    setSelectedFilters({ ...selectedFilters, [filterKey]: value });
-  };
+interface SelectedFilters {
+  [key: string]: string;
+}
+
+const getFilteredGroups = (groups: IGroup[], selectedFilters: SelectedFilters) =>
+  groups.filter(({ closed, avatar_color, friends }: IGroup) => {
+    const { privacyType, avatarColor, friendStatus } = selectedFilters;
+    const hasFriends = !!friends && friends.length > 0;
+
+    return (
+      (privacyType === 'all' || closed === (privacyType === 'closed')) &&
+      (avatarColor === 'all' || avatar_color === avatarColor) &&
+      (friendStatus === 'all' || hasFriends === (friendStatus === 'yes'))
+    );
+  });
+
+export const GroupsFilter: React.FC<GroupsFilterProps> = ({ setFilteredGroups, groups }) => {
+  const [selectedFilters, setSelectedFilters] = useState<SelectedFilters>({
+    privacyType: 'all',
+    avatarColor: 'all',
+    friendStatus: 'all',
+  });
+
+  const filteredGroups = useMemo(
+    () => getFilteredGroups(groups, selectedFilters),
+    [groups, selectedFilters],
+  );
+
+  useEffect(() => {
+    setFilteredGroups(filteredGroups);
+  }, [groups, setFilteredGroups, filteredGroups]);
+
+  const handleFilterChange = useCallback((filterKey: string, value: string) => {
+    setSelectedFilters((prevSelectedFilters) => ({ ...prevSelectedFilters, [filterKey]: value }));
+  }, []);
 
   return (
     <Group header={<Header mode="secondary">Фильтры</Header>}>
@@ -31,7 +59,6 @@ export const GroupsFilter: React.FC<GroupsFilterProps> = ({
           ]}
           onChange={(value) => handleFilterChange('privacyType', value)}
         />
-
         <SelectFilter
           id="avatar-color"
           title="Цвет аватарки"
@@ -49,7 +76,6 @@ export const GroupsFilter: React.FC<GroupsFilterProps> = ({
           selectedValue={selectedFilters.avatarColor}
           onChange={(value) => handleFilterChange('avatarColor', value)}
         />
-
         <SelectFilter
           id="friend-status"
           title="Наличие друзей"

@@ -11,7 +11,7 @@ export const groupsApi = (): Promise<GetGroupsResponse> => {
     };
 
     setTimeout(() => {
-      if (result.result !== 0 && result.data) {
+      if (result.result !== 0) {
         resolve(result);
       } else {
         reject(new Error('Не удалось получить данные'));
