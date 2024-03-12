@@ -24,7 +24,11 @@ export const FriendsList: React.FC<FriendsListProps> = ({ friends }) => {
     >
       {friends.map((friend: User, i) => (
         <SimpleCell
-          key={Math.random()}
+          /**
+           * note (kmiakaeva): key wasn't provided in the mock data + shouldn't be a
+           * concern at this stage anyway since friends list is a part of dynamic popup
+           */
+          key={i}
           before={<Avatar size={48} gradientColor={calcInitialsAvatarColor(i)} />}
         >
           {friend.first_name} {friend.last_name}

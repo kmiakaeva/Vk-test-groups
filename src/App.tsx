@@ -49,6 +49,8 @@ const App: React.FC = () => {
         .catch((error) => {
           if (error instanceof Error) {
             setError(error.message);
+          } else {
+            setError('Неизвестная ошибка');
           }
         })
         .finally(clearPopout);
