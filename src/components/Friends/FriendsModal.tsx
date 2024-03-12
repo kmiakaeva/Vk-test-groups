@@ -52,7 +52,7 @@ export const FriendsModal: React.FC<FriendsModalProps> = ({
           ></ModalPageHeader>
         }
       >
-        {friends && <FriendsList friends={friends} />}
+        {friends && friends.length > 0 && <FriendsList friends={friends} />}
       </ModalPage>
     </ModalRoot>
   );

@@ -22,9 +22,9 @@ export const FriendsList: React.FC<FriendsListProps> = ({ friends }) => {
         </Header>
       }
     >
-      {friends.map((friend: User, i: number) => (
+      {friends.map((friend: User, i) => (
         <SimpleCell
-          key={i}
+          key={Math.random()}
           before={<Avatar size={48} gradientColor={calcInitialsAvatarColor(i)} />}
         >
           {friend.first_name} {friend.last_name}
