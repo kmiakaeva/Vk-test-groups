@@ -5,7 +5,7 @@ interface SelectFilterProps {
   id: string;
   title: string;
   placeholder: string;
-  options: { [key in 'label' | 'value']: string }[];
+  options: Array<{ [key in 'label' | 'value']: string }>;
   selectedValue: string;
   onChange: (value: string) => void;
 }

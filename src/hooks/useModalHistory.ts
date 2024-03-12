@@ -2,30 +2,34 @@ import { useCallback, useState } from 'react';
 
 const useModalHistory = () => {
   const [activeModal, setActiveModal] = useState<string | null>(null);
-  const [modalHistory, setModalHistory] = useState<string[]>([]);
+  const [currModalHistory, setCurrModalHistory] = useState<string[]>([]);
 
   const changeActiveModal = useCallback(
-    (activeModal: string | null) => {
-      activeModal = activeModal || null;
-      let localModalHistory = modalHistory ? [...modalHistory] : [];
+    (currActiveModal: string | null) => {
+      currActiveModal = currActiveModal || null;
 
-      if (activeModal === null) {
+      let localModalHistory = currModalHistory;
+
+      if (currActiveModal === null) {
         localModalHistory = [];
-      } else if (modalHistory.indexOf(activeModal) !== -1) {
-        localModalHistory = localModalHistory.slice(0, localModalHistory.indexOf(activeModal) + 1);
+      } else if (currModalHistory.includes(currActiveModal)) {
+        localModalHistory = localModalHistory.slice(
+          0,
+          localModalHistory.indexOf(currActiveModal) + 1,
+        );
       } else {
-        localModalHistory.push(activeModal);
+        localModalHistory.push(currActiveModal);
       }
 
-      setActiveModal(activeModal);
-      setModalHistory(localModalHistory);
+      setActiveModal(currActiveModal);
+      setCurrModalHistory(localModalHistory);
     },
-    [modalHistory, setActiveModal, setModalHistory],
+    [currModalHistory, setActiveModal, setCurrModalHistory],
   );
 
   const modalBack = useCallback(() => {
-    changeActiveModal(modalHistory[modalHistory.length - 2]);
-  }, [changeActiveModal, modalHistory]);
+    changeActiveModal(currModalHistory[currModalHistory.length - 2]);
+  }, [changeActiveModal, currModalHistory]);
 
   return { activeModal, changeActiveModal, modalBack };
 };

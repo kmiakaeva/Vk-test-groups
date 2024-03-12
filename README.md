@@ -3,24 +3,25 @@
 Создайте простое react приложение, состоящее из одной страницы, которое при открытии будет запрашивать список групп с backend (замокайте ответ метода данными из файла `groups.json`).
 
 Типизация ответа метода получения групп `GetGroupsResponse`:
+
 ```tsx
 interface GetGroupsResponse {
-  result: 1 | 0,
-  data?: Group[]
+  result: 1 | 0;
+  data?: Group[];
 }
 
 interface Group {
-  "id": number,
-  "name": string,
-  "closed": boolean,
-  "avatar_color"?: string,
-  "members_count": number,
-  "friends"?: User[]
+  id: number;
+  name: string;
+  closed: boolean;
+  avatar_color?: string;
+  members_count: number;
+  friends?: User[];
 }
 
 interface User {
-  "first_name": string,
-  "last_name": string
+  first_name: string;
+  last_name: string;
 }
 ```
 
@@ -36,7 +37,8 @@ interface User {
 
 Мы должны иметь возможность отфильтровать группы по типу приватности (все / закрытая / открытая), по цвету аватарки (любой / все возможные значения из атрибута avatar_color), наличию друзей в группе
 
-##### Учтите, что backend обрабатывает все запросы с задержкой в 1 секунду. Реализуйте эту задержку самостоятельно. 
+##### Учтите, что backend обрабатывает все запросы с задержкой в 1 секунду. Реализуйте эту задержку самостоятельно.
+
 ##### Метод так же может упасть в ошибку или вернуть `result: 0` или не вернуть поле `data`, что равносильно ошибке. Просто учтите это в коде.
 
 Инструмент и метод хранения данных на ваше усмотрение. Никаких ограничений на использование сторонних библиотек.

@@ -46,9 +46,9 @@ const App: React.FC = () => {
           }
           setGroups(data);
         })
-        .catch((error) => {
-          if (error instanceof Error) {
-            setError(error.message);
+        .catch((fetchError) => {
+          if (fetchError instanceof Error) {
+            setError(fetchError.message);
           } else {
             setError('Неизвестная ошибка');
           }

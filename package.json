@@ -1,7 +1,7 @@
 {
-  "name": "vk-test",
+  "name": "vk-test-groups",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -9,6 +9,9 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
+  "pre-commit": [
+    "lint"
+  ],
   "dependencies": {
     "@vkontakte/vkui": "^6.0.1",
     "react": "^18.2.0",
@@ -17,13 +20,20 @@
   "devDependencies": {
     "@types/react": "^18.2.56",
     "@types/react-dom": "^18.2.19",
-    "@typescript-eslint/eslint-plugin": "^7.0.2",
-    "@typescript-eslint/parser": "^7.0.2",
+    "@typescript-eslint/eslint-plugin": "5.50",
     "@vitejs/plugin-react": "^4.2.1",
-    "eslint": "^8.56.0",
-    "eslint-plugin-react-hooks": "^4.6.0",
+    "@vkontakte/eslint-plugin": "^1.2.0",
+    "@vkontakte/prettier-config": "^0.1.0",
+    "eslint": "^8.33.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-react": "^7.27.0",
+    "eslint-plugin-react-hooks": "^4.3.0",
     "eslint-plugin-react-refresh": "^0.4.5",
-    "typescript": "^5.2.2",
+    "pre-commit": "^1.2.2",
+    "prettier": "^2.7.1",
+    "typescript": "5.1.x",
     "vite": "^5.1.4"
   }
 }

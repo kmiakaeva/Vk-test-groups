@@ -4,7 +4,7 @@ import { FormItem, Radio, RadioGroup } from '@vkontakte/vkui';
 interface RadioFilterProps {
   id: string;
   title: string;
-  options: { [key in 'label' | 'value']: string }[];
+  options: Array<{ [key in 'label' | 'value']: string }>;
   onChange: (value: string) => void;
 }
 
